@@ -1,0 +1,23 @@
+name: Check Repository File Limit
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  count-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check total tracked files
+        run: |
+          count=$(git ls-files | wc -l)
+          echo "Total tracked files: $count"
+
+          if [ "$count" -gt 1000 ]; then
+            echo "FAILED: Repository exceeds 1000 files."
+            exit 1
+          fi
+
+          echo "PASSED: Repository is within the file limit."
